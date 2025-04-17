@@ -13,9 +13,10 @@ public partial class ManagerForm : Form
     {
         InitializeComponent();
         InitializeThemes();
-
         LoadDrivers();
         LoadThemes();
+        buttonPrev.Enabled = false;
+        buttonForward.Enabled = false;
     }
 
     private void LoadDrivers()
@@ -70,12 +71,23 @@ public partial class ManagerForm : Form
 
     }
 
-    private void LoadDirectory(string path)
+    private Stack<string> _prevHistory = new Stack<string>();
+    private Stack<string> _forwardHistory = new Stack<string>();
+    private void LoadDirectory(string path, bool isNavigation = false)
     {
-        listViewFiles.Items.Clear();
+        if (!isNavigation)
+        {
+            _prevHistory.Push(textBoxPath.Text);
+            _forwardHistory.Clear();
+        }
+
+        
 
         try
         {
+            listViewFiles.Items.Clear();
+            textBoxPath.Text = path;
+
             foreach (string dir in Directory.GetDirectories(path))
             {
                 ListViewItem file = new ListViewItem(Path.GetFileName(dir));
@@ -94,6 +106,9 @@ public partial class ManagerForm : Form
                 item.Tag = file;
                 listViewFiles.Items.Add(item);
             }
+
+            buttonPrev.Enabled = _prevHistory.Count > 0;
+            buttonForward.Enabled = _forwardHistory.Count > 0;
         }
         catch (Exception ex)
         {
@@ -450,6 +465,27 @@ public partial class ManagerForm : Form
     {
         Properties.Settings.Default.Theme = themeName;
         Properties.Settings.Default.Save();
+    }
+
+    private void btnPrev_Click(object sender, EventArgs e)
+    {
+        if (_prevHistory.Count > 0) 
+        {
+            string previousPath = _prevHistory.Pop();
+            _forwardHistory.Push(textBoxPath.Text);
+            LoadDirectory(previousPath, true);
+        }
+
+    }
+
+    private void btnForward_Click(object sender, EventArgs e)
+    {
+        if (_forwardHistory.Count > 0)
+        {
+            string nextPath = _forwardHistory.Pop();
+            _prevHistory.Push(textBoxPath.Text);
+            LoadDirectory(nextPath, true);
+        }
     }
 }
 

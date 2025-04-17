@@ -40,6 +40,8 @@
             propertiesToolStripMenuItem = new ToolStripMenuItem();
             textBoxPath = new TextBox();
             comboBoxThemes = new ComboBox();
+            buttonPrev = new Button();
+            buttonForward = new Button();
             contextMenuStrip.SuspendLayout();
             SuspendLayout();
             // 
@@ -55,11 +57,12 @@
             // 
             // listViewFiles
             // 
+            listViewFiles.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             listViewFiles.ContextMenuStrip = contextMenuStrip;
-            listViewFiles.Location = new Point(282, 33);
+            listViewFiles.Location = new Point(288, 51);
             listViewFiles.Margin = new Padding(30);
             listViewFiles.Name = "listViewFiles";
-            listViewFiles.Size = new Size(518, 417);
+            listViewFiles.Size = new Size(512, 399);
             listViewFiles.TabIndex = 1;
             listViewFiles.UseCompatibleStateImageBehavior = false;
             listViewFiles.DoubleClick += listViewFiles_DoubleClick;
@@ -108,20 +111,42 @@
             // 
             // textBoxPath
             // 
-            textBoxPath.Dock = DockStyle.Top;
-            textBoxPath.Location = new Point(282, 0);
+            textBoxPath.Location = new Point(380, 7);
             textBoxPath.Name = "textBoxPath";
-            textBoxPath.Size = new Size(518, 27);
+            textBoxPath.Size = new Size(420, 27);
             textBoxPath.TabIndex = 2;
             textBoxPath.KeyDown += textBoxPath_KeyDown;
             // 
             // comboBoxThemes
             // 
+            comboBoxThemes.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             comboBoxThemes.FormattingEnabled = true;
-            comboBoxThemes.Location = new Point(288, 410);
+            comboBoxThemes.Location = new Point(637, 410);
             comboBoxThemes.Name = "comboBoxThemes";
             comboBoxThemes.Size = new Size(151, 28);
             comboBoxThemes.TabIndex = 3;
+            // 
+            // buttonPrev
+            // 
+            buttonPrev.BackgroundImage = (Image)resources.GetObject("buttonPrev.BackgroundImage");
+            buttonPrev.BackgroundImageLayout = ImageLayout.Zoom;
+            buttonPrev.Location = new Point(288, 0);
+            buttonPrev.Name = "buttonPrev";
+            buttonPrev.Size = new Size(41, 41);
+            buttonPrev.TabIndex = 4;
+            buttonPrev.UseVisualStyleBackColor = true;
+            buttonPrev.Click += btnPrev_Click;
+            // 
+            // buttonForward
+            // 
+            buttonForward.BackgroundImage = (Image)resources.GetObject("buttonForward.BackgroundImage");
+            buttonForward.BackgroundImageLayout = ImageLayout.Zoom;
+            buttonForward.Location = new Point(333, 0);
+            buttonForward.Name = "buttonForward";
+            buttonForward.Size = new Size(41, 41);
+            buttonForward.TabIndex = 5;
+            buttonForward.UseVisualStyleBackColor = true;
+            buttonForward.Click += btnForward_Click;
             // 
             // ManagerForm
             // 
@@ -129,6 +154,8 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.GradientInactiveCaption;
             ClientSize = new Size(800, 450);
+            Controls.Add(buttonForward);
+            Controls.Add(buttonPrev);
             Controls.Add(comboBoxThemes);
             Controls.Add(textBoxPath);
             Controls.Add(listViewFiles);
@@ -158,5 +185,7 @@
         private CheckBox checkBoxLight;
         private CheckBox checkBoxDark;
         private ComboBox comboBoxThemes;
+        private Button buttonPrev;
+        private Button buttonForward;
     }
 }
