@@ -193,7 +193,16 @@ public partial class ManagerForm : Form
             string path = listViewFiles.SelectedItems[0].Tag.ToString();
             try
             {
-                if (Directory.Exists(path)) Directory.Delete(path, true);
+                if (Directory.Exists(path)) {
+                    if (MessageBox.Show("Delete?", "Deleted successfully", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) {
+                        return;
+                    }
+                    
+                    else
+                    {
+                        Directory.Delete(path, true);
+                    }
+                }
 
                 else File.Delete(path);
                 LoadDirectory(textBoxPath.Text);
@@ -229,36 +238,97 @@ public partial class ManagerForm : Form
             }
         }
     }
-    private void listViewFiles_DoubleClick(object sender, EventArgs e)
+
+    private void btnCreateTextFile_Click(object sender, EventArgs e)
+    {
+        string currentPath = textBoxPath.Text;
+
+        string fileName = Microsoft.VisualBasic.Interaction.InputBox(
+            "Enter file name:",
+            "New text file",
+            "New file.txt"
+            );
+
+        if (string.IsNullOrEmpty(currentPath)) {
+            MessageBox.Show("Enter the name!");
+            return;
+        }
+        if (!Path.HasExtension(fileName))
+        {
+            fileName += ".txt";
+        }
+        string fullPath = Path.Combine(currentPath, fileName);
+
+        try
+        {
+            if (File.Exists(fullPath))
+            {
+                MessageBox.Show("Name already used");
+                return;
+            }
+            File.Create(fullPath).Close();
+            LoadDirectory(currentPath);
+            OpenTextEditor(fullPath);
+        }
+        catch (Exception ex) {
+            MessageBox.Show($"Error: {ex.Message}");
+        }
+    }
+
+    private void OpenTextEditor(string filePath)
+    {
+        TextFileForm editor = new TextFileForm(filePath);
+        editor.ShowDialog();
+    }
+        private void listViewFiles_DoubleClick(object sender, EventArgs e)
     {
         if (listViewFiles.SelectedItems.Count == 0) return;
 
 
-        string currentPath = textBoxPath.Text;
-        string oldFullPath = listViewFiles.SelectedItems[0].Tag.ToString();
-        string newFullPath = Path.Combine(currentPath, oldFullPath);
+        string selectedPath = listViewFiles.SelectedItems[0].Tag.ToString();
+        string ext = Path.GetExtension(selectedPath).ToLower();
 
-        if (Directory.Exists(oldFullPath))
+        if (Directory.Exists(selectedPath))
         {
             
-            LoadDirectory(oldFullPath);
-            textBoxPath.Text = newFullPath;
+            LoadDirectory(selectedPath);
+            textBoxPath.Text = selectedPath;
             return;
             
         }
 
-        else if (File.Exists(oldFullPath))
+        else if (File.Exists(selectedPath))
         {
             try
             {
-                Process.Start(oldFullPath);
-                textBoxPath.Text = newFullPath;
+                switch (ext)
+                {
+                    case ".txt":
+                        OpenTextEditor(selectedPath);
+                        break;
+                    //case ".jpg":
+                    //case ".jpeg":
+                    //case ".png":
+                    //    new ImagesViewForm(oldFullPath).Show();
+                    //    break;
+                    default:
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = selectedPath,
+                            UseShellExecute = true
+
+                        });
+                        break;
+
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error: {ex.Message}");
             }
         }
+
+        
     }
 
     private void btnProperties_Click(object sender, EventArgs e)
