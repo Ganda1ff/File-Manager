@@ -9,12 +9,12 @@ using System.Runtime.InteropServices;
 namespace File_Manager;
 public partial class ManagerForm : Form
 {
+    private readonly ThemeManager _themeManager;
     public ManagerForm()
     {
         InitializeComponent();
-        InitializeThemes();
         LoadDrivers();
-        LoadThemes();
+        _themeManager = new ThemeManager(comboBoxThemes, this);
         buttonPrev.Enabled = false;
         buttonForward.Enabled = false;
     }
@@ -123,7 +123,7 @@ public partial class ManagerForm : Form
 
     private void btnCreateFolder_Click(object sender, EventArgs e)
     {
-        string folderName = Microsoft.VisualBasic.Interaction.InputBox("Enter folder name: ", "New folder");
+        string folderName = Microsoft.VisualBasic.Interaction.InputBox("Enter folder name: ", "New folder", "New folder");
         if (!string.IsNullOrEmpty(folderName))
         {
             try
@@ -143,11 +143,17 @@ public partial class ManagerForm : Form
     {
         if (listViewFiles.SelectedItems.Count == 0)
         {
-            MessageBox.Show("Choose folder!");
+            MessageBox.Show("Choose folder or file!");
             return;
         }
 
-        string newName = Microsoft.VisualBasic.Interaction.InputBox("Enter new name: ", "Submit");
+        string oldFullPath = listViewFiles.SelectedItems[0].Tag.ToString();
+        string currentExtension = Path.GetExtension(oldFullPath);
+        string newName = Microsoft.VisualBasic.Interaction.InputBox(
+            "Enter new name: ",
+            "Submit",
+            Path.GetFileNameWithoutExtension(oldFullPath)
+            );
 
         if (string.IsNullOrEmpty(newName))
         {
@@ -155,28 +161,43 @@ public partial class ManagerForm : Form
             return;
         }
 
-        string currenPath = textBoxPath.Text;
-        string oldFullPath = listViewFiles.SelectedItems[0].Tag.ToString();
-        string newFullPath = Path.Combine(currenPath, newName);
         try
         {
+            bool isDirectory = Directory.Exists(oldFullPath);
+            string parentDir = Path.GetDirectoryName(oldFullPath);
+            string newFileName;
+
+            if (isDirectory) {
+                newFileName = newName;
+            
+            }
+            else
+            {
+                newFileName = Path.HasExtension(newName)
+                    ? newName
+                    : $"{newName}{currentExtension}";
+            }
+
+            string newFullPath = Path.Combine(parentDir, newFileName);
+
             if (File.Exists(newFullPath) || Directory.Exists(newFullPath))
             {
                 MessageBox.Show("Name alreade in use");
                 return;
             }
 
-            if (Directory.Exists(oldFullPath))
+            if (isDirectory)
             {
                 Directory.Move(oldFullPath, newFullPath);
             }
 
-            else if (File.Exists(oldFullPath))
+            else
             {
+                
                 File.Move(oldFullPath, newFullPath);
             }
 
-            LoadDirectory(currenPath);
+            LoadDirectory(parentDir);
         }
         catch (Exception ex)
         {
@@ -193,18 +214,29 @@ public partial class ManagerForm : Form
             string path = listViewFiles.SelectedItems[0].Tag.ToString();
             try
             {
-                if (Directory.Exists(path)) {
-                    if (MessageBox.Show("Delete?", "Deleted successfully", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) {
+                if (Directory.Exists(path))
+                {
+                    if (MessageBox.Show("Delete folder?", "Deleting", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    {
                         return;
                     }
-                    
+
                     else
                     {
                         Directory.Delete(path, true);
                     }
                 }
 
-                else File.Delete(path);
+                else {
+                    if (MessageBox.Show("Delete file?", "Deleting", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        File.Delete(path);
+                    }
+                }
                 LoadDirectory(textBoxPath.Text);
             }
             catch (Exception ex)
@@ -451,91 +483,7 @@ public partial class ManagerForm : Form
 
 
     //Themes
-    private void InitializeThemes()
-    {
-        comboBoxThemes.Items.AddRange(new object[] { "Light Theme", "Dark Theme" });
-        comboBoxThemes.SelectedIndexChanged += comboBoxThemes_SelectedIndexChanged;
-    }
-
-    private void LoadThemes()
-    {
-        string savedTheme = Properties.Settings.Default.Theme;
-        comboBoxThemes.SelectedItem = string.IsNullOrEmpty(savedTheme)
-            ? "Light Theme" : savedTheme;
-    }
-
-    private void comboBoxThemes_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        var theme = comboBoxThemes.SelectedItem.ToString();
-        ApplyTheme(theme);
-        SaveTheme(theme);
-    }
-
-    private void ApplyTheme(string themeName)
-    {
-        var theme = GetThemeColors(themeName);
-        ApplyToControls(this, theme);
-    }
-
-    private ThemeColors GetThemeColors(string themeName)
-    {
-        return themeName switch
-        {
-            "Dark Theme" => new ThemeColors
-            {
-                Background = Color.FromArgb(32, 32, 32),
-                Foreground = Color.WhiteSmoke,
-                ControlBackground = Color.FromArgb(50, 50, 50),
-                Highlight = Color.FromArgb(64, 64, 64),
-                Border = Color.FromArgb(0, 0, 0)
-            },
-            _ => new ThemeColors
-            {
-                Background = SystemColors.Control,
-                Foreground = SystemColors.ControlText,
-                ControlBackground = SystemColors.Window,
-                Highlight = SystemColors.Highlight,
-                Border = SystemColors.ActiveBorder
-            }
-        };
-    }
-
-    private void ApplyToControls(Control parent, ThemeColors theme)
-    {
-        foreach (Control control in parent.Controls)
-        {
-            ApplyToControls(control, theme);
-
-            switch (control)
-            {
-                case ListView lv:
-                    lv.BackColor = theme.ControlBackground;
-                    lv.ForeColor = theme.Foreground;
-                    break;
-                case TreeView tv:
-                    tv.BackColor = theme.ControlBackground;
-                    tv.ForeColor = theme.Foreground;
-                    break;
-                case ContextMenuStrip cms:
-                    cms.BackColor = theme.ControlBackground;
-                    cms.ForeColor = theme.Foreground;
-                    break;
-                case TextBox txt:
-                    txt.BackColor = theme.ControlBackground;
-                    txt.ForeColor = theme.Foreground;
-                    txt.BorderStyle = BorderStyle.FixedSingle;
-                    break;
-            }
-        }
-        parent.BackColor = theme.Background;
-        parent.ForeColor = theme.Foreground;
-    }
-
-    private void SaveTheme(string themeName)
-    {
-        Properties.Settings.Default.Theme = themeName;
-        Properties.Settings.Default.Save();
-    }
+    
 
     private void btnPrev_Click(object sender, EventArgs e)
     {

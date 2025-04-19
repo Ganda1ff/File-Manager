@@ -29,27 +29,19 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TextFileForm));
-            textBoxFile = new TextBox();
             menuStrip1 = new MenuStrip();
             saveToolStripMenuItem = new ToolStripMenuItem();
+            findToolStripMenuItem = new ToolStripMenuItem();
             labelCounter = new Label();
+            labelFileName = new Label();
+            richTextBoxFile = new RichTextBox();
             menuStrip1.SuspendLayout();
             SuspendLayout();
-            // 
-            // textBoxFile
-            // 
-            textBoxFile.Dock = DockStyle.Fill;
-            textBoxFile.Location = new Point(0, 28);
-            textBoxFile.Multiline = true;
-            textBoxFile.Name = "textBoxFile";
-            textBoxFile.Size = new Size(800, 422);
-            textBoxFile.TabIndex = 0;
-            textBoxFile.TextChanged += textBoxFile_TextChanged;
             // 
             // menuStrip1
             // 
             menuStrip1.ImageScalingSize = new Size(20, 20);
-            menuStrip1.Items.AddRange(new ToolStripItem[] { saveToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { saveToolStripMenuItem, findToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(800, 28);
@@ -64,6 +56,14 @@
             saveToolStripMenuItem.Text = "Save";
             saveToolStripMenuItem.Click += saveToolStripMenuItem_Click;
             // 
+            // findToolStripMenuItem
+            // 
+            findToolStripMenuItem.Name = "findToolStripMenuItem";
+            findToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.F;
+            findToolStripMenuItem.Size = new Size(51, 24);
+            findToolStripMenuItem.Text = "Find";
+            findToolStripMenuItem.Click += findToolStripMenuItem_Click;
+            // 
             // labelCounter
             // 
             labelCounter.Dock = DockStyle.Bottom;
@@ -72,18 +72,37 @@
             labelCounter.Size = new Size(800, 20);
             labelCounter.TabIndex = 2;
             // 
+            // labelFileName
+            // 
+            labelFileName.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            labelFileName.Location = new Point(262, 430);
+            labelFileName.Name = "labelFileName";
+            labelFileName.Size = new Size(538, 25);
+            labelFileName.TabIndex = 3;
+            // 
+            // richTextBoxFile
+            // 
+            richTextBoxFile.Dock = DockStyle.Fill;
+            richTextBoxFile.Location = new Point(0, 28);
+            richTextBoxFile.Name = "richTextBoxFile";
+            richTextBoxFile.Size = new Size(800, 402);
+            richTextBoxFile.TabIndex = 4;
+            richTextBoxFile.Text = "";
+            richTextBoxFile.TextChanged += richTextBoxFile_TextChanged;
+            // 
             // TextFileForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(richTextBoxFile);
+            Controls.Add(labelFileName);
             Controls.Add(labelCounter);
-            Controls.Add(textBoxFile);
             Controls.Add(menuStrip1);
             Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = menuStrip1;
             Name = "TextFileForm";
-            Text = "TextFileForm";
+            Text = "tEditor";
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             ResumeLayout(false);
@@ -91,10 +110,11 @@
         }
 
         #endregion
-
-        private TextBox textBoxFile;
         private MenuStrip menuStrip1;
         private ToolStripMenuItem saveToolStripMenuItem;
         private Label labelCounter;
+        private Label labelFileName;
+        private ToolStripMenuItem findToolStripMenuItem;
+        private RichTextBox richTextBoxFile;
     }
 }

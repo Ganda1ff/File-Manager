@@ -34,6 +34,8 @@
             listViewFiles = new ListView();
             contextMenuStrip = new ContextMenuStrip(components);
             createFolderToolStripMenuItem1 = new ToolStripMenuItem();
+            createFolderStripMenuItem = new ToolStripMenuItem();
+            createTextToolStripMenuItem = new ToolStripMenuItem();
             deleteFolderToolStripMenuItem1 = new ToolStripMenuItem();
             copyFolderToolStripMenuItem1 = new ToolStripMenuItem();
             renameFolderToolStripMenuItem1 = new ToolStripMenuItem();
@@ -42,9 +44,6 @@
             comboBoxThemes = new ComboBox();
             buttonPrev = new Button();
             buttonForward = new Button();
-            groupBox1 = new GroupBox();
-            createFolderStripMenuItem = new ToolStripMenuItem();
-            createTextToolStripMenuItem = new ToolStripMenuItem();
             contextMenuStrip.SuspendLayout();
             SuspendLayout();
             // 
@@ -75,41 +74,55 @@
             contextMenuStrip.ImageScalingSize = new Size(20, 20);
             contextMenuStrip.Items.AddRange(new ToolStripItem[] { createFolderToolStripMenuItem1, deleteFolderToolStripMenuItem1, copyFolderToolStripMenuItem1, renameFolderToolStripMenuItem1, propertiesToolStripMenuItem });
             contextMenuStrip.Name = "contextMenuStrip";
-            contextMenuStrip.Size = new Size(211, 152);
+            contextMenuStrip.Size = new Size(155, 124);
             // 
             // createFolderToolStripMenuItem1
             // 
             createFolderToolStripMenuItem1.DropDownItems.AddRange(new ToolStripItem[] { createFolderStripMenuItem, createTextToolStripMenuItem });
             createFolderToolStripMenuItem1.Name = "createFolderToolStripMenuItem1";
-            createFolderToolStripMenuItem1.Size = new Size(210, 24);
+            createFolderToolStripMenuItem1.Size = new Size(154, 24);
             createFolderToolStripMenuItem1.Text = "New";
-            
+            // 
+            // createFolderStripMenuItem
+            // 
+            createFolderStripMenuItem.Name = "createFolderStripMenuItem";
+            createFolderStripMenuItem.Size = new Size(146, 26);
+            createFolderStripMenuItem.Text = "Folder";
+            createFolderStripMenuItem.Click += btnCreateFolder_Click;
+            // 
+            // createTextToolStripMenuItem
+            // 
+            createTextToolStripMenuItem.Name = "createTextToolStripMenuItem";
+            createTextToolStripMenuItem.Size = new Size(146, 26);
+            createTextToolStripMenuItem.Text = "Text File";
+            createTextToolStripMenuItem.Click += btnCreateTextFile_Click;
             // 
             // deleteFolderToolStripMenuItem1
             // 
             deleteFolderToolStripMenuItem1.Name = "deleteFolderToolStripMenuItem1";
-            deleteFolderToolStripMenuItem1.Size = new Size(210, 24);
+            deleteFolderToolStripMenuItem1.ShortcutKeys = Keys.Delete;
+            deleteFolderToolStripMenuItem1.Size = new Size(154, 24);
             deleteFolderToolStripMenuItem1.Text = "Delete";
             deleteFolderToolStripMenuItem1.Click += btnDelete_Click;
             // 
             // copyFolderToolStripMenuItem1
             // 
             copyFolderToolStripMenuItem1.Name = "copyFolderToolStripMenuItem1";
-            copyFolderToolStripMenuItem1.Size = new Size(210, 24);
+            copyFolderToolStripMenuItem1.Size = new Size(154, 24);
             copyFolderToolStripMenuItem1.Text = "Copy";
             copyFolderToolStripMenuItem1.Click += btnCopy_Click;
             // 
             // renameFolderToolStripMenuItem1
             // 
             renameFolderToolStripMenuItem1.Name = "renameFolderToolStripMenuItem1";
-            renameFolderToolStripMenuItem1.Size = new Size(210, 24);
+            renameFolderToolStripMenuItem1.Size = new Size(154, 24);
             renameFolderToolStripMenuItem1.Text = "Rename";
             renameFolderToolStripMenuItem1.Click += btnRename_Click;
             // 
             // propertiesToolStripMenuItem
             // 
             propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
-            propertiesToolStripMenuItem.Size = new Size(210, 24);
+            propertiesToolStripMenuItem.Size = new Size(154, 24);
             propertiesToolStripMenuItem.Text = "Properties";
             propertiesToolStripMenuItem.Click += btnProperties_Click;
             // 
@@ -152,29 +165,6 @@
             buttonForward.UseVisualStyleBackColor = true;
             buttonForward.Click += btnForward_Click;
             // 
-            // groupBox1
-            // 
-            groupBox1.Dock = DockStyle.Right;
-            groupBox1.Location = new Point(288, 0);
-            groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(512, 450);
-            groupBox1.TabIndex = 6;
-            groupBox1.TabStop = false;
-            // 
-            // createFolderStripMenuItem
-            // 
-            createFolderStripMenuItem.Name = "createFolderStripMenuItem";
-            createFolderStripMenuItem.Size = new Size(224, 26);
-            createFolderStripMenuItem.Text = "Folder";
-            createFolderStripMenuItem.Click += btnCreateFolder_Click;
-            // 
-            // createTextToolStripMenuItem
-            // 
-            createTextToolStripMenuItem.Name = "createTextToolStripMenuItem";
-            createTextToolStripMenuItem.Size = new Size(224, 26);
-            createTextToolStripMenuItem.Text = "Text File";
-            createTextToolStripMenuItem.Click += btnCreateTextFile_Click;
-            // 
             // ManagerForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -187,7 +177,6 @@
             Controls.Add(textBoxPath);
             Controls.Add(listViewFiles);
             Controls.Add(treeViewFolders);
-            Controls.Add(groupBox1);
             ForeColor = SystemColors.ActiveCaptionText;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "ManagerForm";
@@ -215,7 +204,6 @@
         private ComboBox comboBoxThemes;
         private Button buttonPrev;
         private Button buttonForward;
-        private GroupBox groupBox1;
         private ToolStripMenuItem createFolderStripMenuItem;
         private ToolStripMenuItem createTextToolStripMenuItem;
     }
